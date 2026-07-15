@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nikshyaa's Magical Sunflower Garden</title>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --sky-top: #0d0221;
+            --sky-mid: #3d0c6b;
+            --sky-dawn: #a0395a;
+            --sky-horizon: #f4845f;
+            --sky-glow: #fbc687;
+            --ground-dark: #0a1f07;
+            --ground-mid: #142f0e;
+            --ground-light: #1e4a15;
+            --petal-bright: #ffe234;
+            --petal-mid: #ffb703;
+            --petal-deep: #e07a00;
+            --disc-light: #7c3a0a;
+            --disc-dark: #2e0f00;
+            --stem-light: #52c41a;
+            --stem-dark: #237804;
+            --leaf-light: #4caf50;
+            --leaf-dark: #1b5e20;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #0d0221;
+        }
+
+        /* ══════════ SCENE ══════════ */
+        #scene {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            perspective: 1200px;
+        }
+
+        /* ══════════ SKY ══════════ */
+        #sky {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom,
+                    #06010f 0%,
+                    #140530 12%,
+                    #2c0858 26%,
+                    #5c1040 40%,
+                    #9e2a28 54%,
+                    #d95030 64%,
+                    #f07040 73%,
+                    #f89a5a 82%,
+                    #fcc078 90%,
+                    #fde8c0 100%);
+            z-index: 0;
+        }
+
+        /* Horizon warmth glow */
+        #horizon-glow {
+            position: absolute;
+            bottom: clamp(55px, 17vh, 160px);
+            left: -10%;
+            width: 120%;
+            height: clamp(60px, 12vh, 120px);
+            background: radial-gradient(ellipse at 50% 100%, rgba(255, 160, 50, .55) 0%, rgba(255, 100, 20, .25) 50%, transparent 75%);
+            z-index: 9;
+            pointer-events: none;
+            filter: blur(12px);
+        }
+
+        /* Horizon mist */
+        #mist {
+            position: absolute;
+            bottom: clamp(50px, 15vh, 150px);
+            left: -5%;
+            width: 110%;
+            height: clamp(40px, 8vh, 80px);
+            background: linear-gradient(to top, rgba(255, 210, 150, .18), transparent);
+            z-index: 13;
+            pointer-events: none;
+            filter: blur(6px);
+        }
+
+        /* ══════════ STARS ══════════ */
+        #stars {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle var(--dur, 3s) ease-in-out infinite var(--delay, 0s);
+            opacity: 0;
+        }
+
+        @keyframes twinkle {
+
+            0%,
+            100% {
+                opacity: 0;
+                transform: scale(0.6);
+            }
+
+            50% {
+                opacity: var(--max-op, 0.9);
+                transform: scale(1);
+            }
+        }
+
+        /* ══════════ AURORA BANDS ══════════ */
+        .aurora {
+            position: absolute;
+            width: 160%;
+            left: -30%;
+            border-radius: 50%;
+            filter: blur(40px);
+            opacity: 0.18;
+            animation: auroraFlow var(--adur, 14s) ease-in-out infinite alternate;
+        }
+
+        .aurora-1 {
+            height: 120px;
+            top: 8%;
+            background: linear-gradient(90deg, #9b59b6, #e91e63, #ff9800);
+            --adur: 18s;
+        }
+
+        .aurora-2 {
+            height: 80px;
+            top: 18%;
+            background: linear-gradient(90deg, #3f51b5, #00bcd4, #8bc34a);
+            --adur: 22s;
+            animation-direction: alternate-reverse;
+        }
+
+        @keyframes auroraFlow {
+            0% {
+                transform: translateX(-5%) scaleY(0.8);
+            }
+
+            100% {
+                transform: translateX(5%) scaleY(1.2);
+            }
+        }
+
+        /* ══════════ SUN ══════════ */
+        #sun-wrap {
+            position: absolute;
+            z-index: 3;
+            animation: sunArc 24s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes sunArc {
+            0% {
+                left: -12%;
+                top: 68%;
+            }
+
+            50% {
+                left: 48%;
+                top: 6%;
+            }
+
+            100% {
+                left: 112%;
+                top: 68%;
+            }
+        }
+
+        #sun {
+            width: clamp(55px, 9vw, 88px);
+            height: clamp(55px, 9vw, 88px);
+            border-radius: 50%;
+            background: radial-gradient(circle at 38% 38%, #fffdf0 0%, #ffe066 35%, #ffb703 65%, #fb8500 100%);
+            box-shadow:
+                0 0 30px 8px rgba(255, 200, 50, 0.9),
+                0 0 70px 20px rgba(255, 160, 30, 0.6),
+                0 0 140px 50px rgba(255, 100, 10, 0.3);
+            position: relative;
+            animation: sunPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes sunPulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 30px 8px rgba(255, 200, 50, .9), 0 0 70px 20px rgba(255, 160, 30, .6), 0 0 140px 50px rgba(255, 100, 10, .3);
+            }
+
+            50% {
+                box-shadow: 0 0 50px 15px rgba(255, 220, 80, 1), 0 0 100px 35px rgba(255, 180, 50, .8), 0 0 200px 80px rgba(255, 120, 20, .4);
+            }
+        }
+
+        /* Sun rays */
+        .sun-ray {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 200%;
+            height: 3px;
+            background: linear-gradient(90deg, rgba(255, 220, 80, 0.7), transparent);
+            transform-origin: left center;
+            border-radius: 2px;
+            animation: rayRotate 8s linear infinite;
+        }
+
+        @keyframes rayRotate {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ══════════ LENS FLARE ══════════ */
+        .flare {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0.5;
+            filter: blur(2px);
+            background: radial-gradient(circle, rgba(255, 255, 200, 0.9), rgba(255, 200, 100, 0.1));
+        }
+
+        /* ══════════ CLOUDS ══════════ */
+        .cloud-group {
+            position: absolute;
+            pointer-events: none;
+            filter: blur(3px);
+            opacity: 0.22;
+            animation: cloudDrift var(--cdur, 35s) linear infinite;
+        }
+
+        @keyframes cloudDrift {
+            from {
+                transform: translateX(-25vw);
+            }
+
+            to {
+                transform: translateX(125vw);
+            }
+        }
+
+        .cloud-blob {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+        }
+
+        /* ══════════ NAME ══════════ */
+        #name-wrap {
+            position: absolute;
+            top: clamp(80px, 16vh, 150px);
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 20;
+            text-align: center;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .animated-name {
+            font-family: 'Great Vibes', cursive;
+            font-size: clamp(2.8rem, 9vw, 6.5rem);
+            color: #fffdf0;
+            display: inline-block;
+            animation: nameFloat 5s ease-in-out infinite;
+            letter-spacing: 0.03em;
+            filter: drop-shadow(0 0 2px rgba(255, 220, 100, 0.8));
+        }
+
+        @keyframes nameFloat {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(-1.5deg);
+                text-shadow: 0 0 8px rgba(255, 255, 255, .9), 0 0 20px #ffcc00, 0 0 45px #ffb703, 0 0 80px rgba(255, 90, 20, .5);
+            }
+
+            50% {
+                transform: translateY(-14px) rotate(1.5deg);
+                text-shadow: 0 0 14px rgba(255, 255, 255, 1), 0 0 35px #ffe234, 0 0 70px #ffb703, 0 0 120px rgba(255, 60, 10, .6);
+            }
+        }
+
+        /* Sparkle particles around name */
+        .name-sparkle {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: #ffe234;
+            animation: sparklePop var(--sdur, 2s) ease-out infinite var(--sdel, 0s);
+            opacity: 0;
+        }
+
+        @keyframes sparklePop {
+            0% {
+                transform: translate(0, 0) scale(0);
+                opacity: 0;
+            }
+
+            20% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translate(var(--sx, 20px), var(--sy, -30px)) scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* ══════════ GROUND ══════════ */
+        #ground {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: clamp(80px, 22vh, 200px);
+            z-index: 10;
+            overflow: hidden;
+        }
+
+        /* 3-layer ground depth */
+        .ground-layer {
+            position: absolute;
+            width: 100%;
+            border-radius: 60% 60% 0 0 / 30% 30% 0 0;
+        }
+
+        .gl-back {
+            bottom: 0;
+            height: 100%;
+            background: linear-gradient(to bottom, #0d2b0a, #04120200);
+        }
+
+        .gl-mid {
+            bottom: 0;
+            height: 85%;
+            background: linear-gradient(to bottom, #142f0e, #071508);
+        }
+
+        .gl-front {
+            bottom: 0;
+            height: 60%;
+            background: linear-gradient(to bottom, #1e4a15, #0a2208);
+            box-shadow: inset 0 15px 40px rgba(253, 200, 80, .12);
+        }
+
+        /* ══════════ GRASS BLADES ══════════ */
+        #grass {
+            position: absolute;
+            bottom: clamp(60px, 18vh, 170px);
+            width: 100%;
+            height: 80px;
+            z-index: 11;
+            pointer-events: none;
+        }
+
+        .grass-blade {
+            position: absolute;
+            bottom: 0;
+            width: 3px;
+            border-radius: 50% 50% 0 0;
+            transform-origin: bottom center;
+            animation: grassWave var(--gbdur, 3s) ease-in-out infinite alternate var(--gbdel, 0s);
+        }
+
+        @keyframes grassWave {
+            0% {
+                transform: rotate(var(--ga1, -8deg));
+            }
+
+            100% {
+                transform: rotate(var(--ga2, 8deg));
+            }
+        }
+
+        /* ══════════ GARDEN ══════════ */
+        #garden {
+            position: absolute;
+            bottom: clamp(55px, 17vh, 160px);
+            width: 100%;
+            z-index: 12;
+            pointer-events: none;
+        }
+
+        /* ══════════ SUNFLOWER ══════════ */
+        .sf-wrap {
+            position: absolute;
+            bottom: 0;
+            transform-origin: bottom center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sf-sway-outer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform-origin: bottom center;
+            animation: sway var(--sw-dur, 5s) ease-in-out infinite alternate var(--sw-del, 0s);
+        }
+
+        @keyframes sway {
+            0% {
+                transform: rotate(var(--sw1, -4deg));
+            }
+
+            100% {
+                transform: rotate(var(--sw2, 4deg));
+            }
+        }
+
+        /* Single container — head + stem absolutely placed so they always connect */
+        .sf-unit {
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .sf-unit .stem {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+            /* ← stem always BEHIND head */
+        }
+
+        .sf-unit .flower-head {
+            position: absolute;
+            top: 0;
+            transform-origin: center center;
+            will-change: transform;
+            z-index: 3;
+            /* ← head always IN FRONT of stem */
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, .55));
+        }
+
+        /* Warm glow halo behind each flower */
+        .flower-aura {
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-radius: 50%;
+            z-index: 2;
+            /* between stem and head */
+            pointer-events: none;
+            background: radial-gradient(circle, rgba(255, 210, 60, .55) 0%, rgba(255, 160, 20, .25) 40%, transparent 70%);
+            animation: auraPulse var(--sw-dur, 5s) ease-in-out infinite alternate var(--sw-del, 0s);
+        }
+
+        @keyframes auraPulse {
+            0% {
+                transform: scale(0.92);
+                opacity: 0.7;
+            }
+
+            100% {
+                transform: scale(1.08);
+                opacity: 1.0;
+            }
+        }
+
+        /* Shadow under each flower */
+        .sf-shadow {
+            width: 60px;
+            height: 10px;
+            background: radial-gradient(ellipse, rgba(0, 0, 0, 0.45), transparent 70%);
+            border-radius: 50%;
+            margin-top: -4px;
+            animation: shadowPulse var(--sw-dur, 5s) ease-in-out infinite alternate var(--sw-del, 0s);
+        }
+
+        @keyframes shadowPulse {
+            0% {
+                transform: scaleX(0.85);
+                opacity: 0.5;
+            }
+
+            100% {
+                transform: scaleX(1.1);
+                opacity: 0.3;
+            }
+        }
+
+        .stem {
+            border-radius: 7px;
+            background: linear-gradient(to right,
+                    #8de84a 0%,
+                    #5ed41a 15%,
+                    #3aaa00 45%,
+                    #237804 75%,
+                    #184f02 100%);
+            position: relative;
+            box-shadow:
+                3px 0 8px rgba(0, 0, 0, .3),
+                inset -3px 0 6px rgba(0, 0, 0, .2),
+                inset 2px 0 5px rgba(255, 255, 255, .2);
+        }
+
+        .leaf {
+            position: absolute;
+            border-radius: 50% 0 50% 0;
+            background: linear-gradient(135deg,
+                    #72d926 0%,
+                    #4ab800 35%,
+                    #2d8c00 65%,
+                    #1a5e00 100%);
+            box-shadow:
+                2px 4px 8px rgba(0, 0, 0, .3),
+                inset 0 2px 4px rgba(255, 255, 255, .25),
+                inset 0 -2px 6px rgba(0, 80, 0, .2);
+        }
+
+        /* Leaf vein */
+        .leaf::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            width: 80%;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.25);
+            transform: rotate(-10deg);
+        }
+
+        .leaf.l {
+            transform: rotate(-30deg);
+            border-radius: 50% 0 50% 0;
+        }
+
+        .leaf.r {
+            transform: rotate(145deg);
+            border-radius: 50% 0 50% 0;
+        }
+
+        /* Flower head — the 3D disc (positioning handled by .sf-unit .flower-head) */
+        .flower-head {}
+
+        /* 3D disc with multiple layers */
+        .disc-back {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle at 38% 32%, #c46518 0%, #7a2e04 45%, #2e0f00 100%);
+            box-shadow:
+                0 6px 18px rgba(0, 0, 0, .65),
+                inset 0 -6px 16px rgba(0, 0, 0, .55),
+                inset 0 3px 8px rgba(255, 180, 80, .18),
+                0 0 0 3px rgba(80, 30, 0, .4);
+        }
+
+        .disc-texture {
+            position: absolute;
+            border-radius: 50%;
+            background:
+                radial-gradient(circle at 32% 28%, rgba(255, 255, 255, .09) 0%, transparent 40%),
+                repeating-radial-gradient(circle at center, transparent 0px, transparent 3px, rgba(0, 0, 0, .1) 3px, rgba(0, 0, 0, .1) 4px),
+                repeating-conic-gradient(rgba(0, 0, 0, .06) 0deg 10deg, transparent 10deg 20deg);
+            pointer-events: none;
+            mix-blend-mode: overlay;
+        }
+
+        .center-disc {
+            position: absolute;
+            border-radius: 50%;
+            z-index: 4;
+            background:
+                radial-gradient(circle at 35% 30%, #e08030 0%, #9a4010 30%, #5a1e04 60%, #2e0f00 100%);
+            box-shadow:
+                inset 0 -7px 18px rgba(0, 0, 0, .75),
+                inset 0 4px 8px rgba(255, 200, 80, .25),
+                inset 2px 2px 6px rgba(255, 150, 50, .15),
+                0 8px 22px rgba(0, 0, 0, .5);
+        }
+
+        .face {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .eye {
+            position: absolute;
+            background: #111;
+            border-radius: 50%;
+            box-shadow: inset 0 1px 2px rgba(255, 255, 255, .35);
+        }
+
+        .eye.l {
+            left: 26%;
+        }
+
+        .eye.r {
+            right: 24%;
+        }
+
+        .cheek {
+            position: absolute;
+            background: radial-gradient(circle, rgba(255, 105, 135, .7), rgba(255, 100, 120, .1));
+            border-radius: 50%;
+        }
+
+        .cheek.l {
+            left: 14%;
+        }
+
+        .cheek.r {
+            right: 12%;
+        }
+
+        .smile {
+            position: absolute;
+            border-bottom: 3px solid #111;
+            border-radius: 0 0 50% 50%;
+        }
+
+        /* Petals */
+        .petals {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+        }
+
+        .petal {
+            position: absolute;
+            border-radius: 55% 55% 35% 35% / 65% 65% 35% 35%;
+            background: linear-gradient(170deg,
+                    #fff7a0 0%,
+                    #ffe234 18%,
+                    #ffc500 45%,
+                    #ffaa00 70%,
+                    #e07800 100%);
+            transform-origin: center bottom;
+            box-shadow:
+                inset 0 -6px 12px rgba(180, 80, 0, .3),
+                inset 0 6px 14px rgba(255, 250, 180, .4),
+                2px 3px 10px rgba(0, 0, 0, .22);
+            backface-visibility: hidden;
+        }
+
+        /* Central highlight vein */
+        .petal::after {
+            content: '';
+            position: absolute;
+            top: 8%;
+            left: 38%;
+            width: 24%;
+            height: 72%;
+            background: linear-gradient(to bottom, rgba(255, 255, 220, .55), rgba(255, 220, 100, .1));
+            border-radius: 50%;
+        }
+
+        /* Edge shadow for depth */
+        .petal::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: linear-gradient(160deg, rgba(255, 255, 255, .18) 0%, transparent 40%, rgba(160, 70, 0, .18) 100%);
+        }
+
+        /* ══════════ FIREFLIES ══════════ */
+        .ff {
+            position: absolute;
+            border-radius: 50%;
+            z-index: 18;
+            background: #d4f520;
+            animation:
+                ffFloat var(--ffd, 9s) ease-in-out infinite var(--ffdel, 0s),
+                ffGlow var(--ffg, 2s) ease-in-out infinite var(--ffdel, 0s);
+        }
+
+        @keyframes ffFloat {
+            0% {
+                transform: translate(0, 0) scale(0);
+                opacity: 0;
+            }
+
+            10% {
+                transform: translate(5px, -8px) scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: translate(-12px, -22vh) scale(0.9);
+                opacity: 0.9;
+            }
+
+            90% {
+                transform: translate(8px, -36vh) scale(0.5);
+                opacity: 0.3;
+            }
+
+            100% {
+                transform: translate(0, -40vh) scale(0);
+                opacity: 0;
+            }
+        }
+
+        @keyframes ffGlow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 4px 2px rgba(212, 245, 32, .7);
+            }
+
+            50% {
+                box-shadow: 0 0 10px 5px rgba(212, 245, 32, 1);
+            }
+        }
+
+        /* ══════════ PARTICLES (golden dust) ══════════ */
+        .dust {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: dustRise var(--ddur, 12s) ease-out infinite var(--ddel, 0s);
+            opacity: 0;
+        }
+
+        @keyframes dustRise {
+            0% {
+                transform: translate(0, 0) scale(0);
+                opacity: 0;
+            }
+
+            15% {
+                opacity: var(--dop, 0.6);
+            }
+
+            100% {
+                transform: translate(var(--dx, 30px), -35vh) scale(0.3);
+                opacity: 0;
+            }
+        }
+
+        /* ══════════ SHOOTING STAR ══════════ */
+        .shoot {
+            position: absolute;
+            height: 2px;
+            border-radius: 1px;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, .9));
+            opacity: 0;
+            animation: shoot var(--shdur, 1.2s) ease-in var(--shdel, 6s) infinite;
+            transform-origin: right center;
+            transform: rotate(-30deg);
+        }
+
+        @keyframes shoot {
+            0% {
+                opacity: 0;
+                transform: rotate(-30deg) translateX(0);
+            }
+
+            5% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+                transform: rotate(-30deg) translateX(-80vw);
+            }
+        }
+
+        /* ══════════ RESPONSIVE ══════════ */
+        @media (max-width: 480px) {
+            #name-wrap {
+                top: clamp(60px, 12vh, 100px);
+            }
+
+            #garden {
+                bottom: clamp(45px, 15vh, 130px);
+            }
+
+            #grass {
+                bottom: clamp(45px, 15vh, 130px);
+            }
+        }
+
+        @media (orientation: landscape) and (max-height: 500px) {
+            #name-wrap {
+                top: 8vh;
+            }
+
+            .animated-name {
+                font-size: clamp(2rem, 7vw, 4rem);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="scene">
+
+        <!-- SKY -->
+        <div id="sky">
+            <div class="aurora aurora-1"></div>
+            <div class="aurora aurora-2"></div>
+        </div>
+
+        <!-- STARS -->
+        <div id="stars"></div>
+
+        <!-- SUN -->
+        <div id="sun-wrap">
+            <div id="sun">
+                <!-- rays generated by JS -->
+            </div>
+        </div>
+
+        <!-- NAME -->
+        <div id="name-wrap">
+            <div class="animated-name" id="nameEl">Nikshyaa</div>
+        </div>
+
+        <!-- Horizon glow & mist -->
+        <div id="horizon-glow"></div>
+        <div id="mist"></div>
+
+        <!-- GRASS -->
+        <div id="grass"></div>
+
+        <!-- GARDEN -->
+        <div id="garden"></div>
+
+        <!-- GROUND -->
+        <div id="ground">
+            <div class="ground-layer gl-back"></div>
+            <div class="ground-layer gl-mid"></div>
+            <div class="ground-layer gl-front"></div>
+        </div>
+
+    </div>
+
+    <script>
+        /* ━━━━━━━━━━ HELPERS ━━━━━━━━━━ */
+        const $ = id => document.getElementById(id);
+        const rnd = (a, b) => a + Math.random() * (b - a);
+        const rndInt = (a, b) => Math.floor(rnd(a, b + 1));
+        const pick = arr => arr[rndInt(0, arr.length - 1)];
+        const isMobile = () => window.innerWidth < 640;
+
+        /* ━━━━━━━━━━ STARS ━━━━━━━━━━ */
+        (function buildStars() {
+            const cont = $('stars');
+            const count = isMobile() ? 80 : 160;
+            for (let i = 0; i < count; i++) {
+                const s = document.createElement('div');
+                s.className = 'star';
+                const sz = rnd(1, 3.5);
+                Object.assign(s.style, {
+                    width: sz + 'px', height: sz + 'px',
+                    top: rnd(0, 65) + '%', left: rnd(0, 100) + '%',
+                    '--dur': rnd(2, 6) + 's',
+                    '--delay': '-' + rnd(0, 6) + 's',
+                    '--max-op': rnd(0.5, 1)
+                });
+                cont.appendChild(s);
+            }
+        })();
+
+        /* ━━━━━━━━━━ SHOOTING STARS ━━━━━━━━━━ */
+        (function buildShoots() {
+            const sky = $('sky');
+            for (let i = 0; i < 4; i++) {
+                const el = document.createElement('div');
+                el.className = 'shoot';
+                Object.assign(el.style, {
+                    top: rnd(5, 40) + '%',
+                    right: rnd(5, 80) + '%',
+                    width: rnd(80, 200) + 'px',
+                    '--shdur': rnd(0.8, 1.4) + 's',
+                    '--shdel': rnd(4, 20) + 's'
+                });
+                sky.appendChild(el);
+            }
+        })();
+
+        /* ━━━━━━━━━━ SUN RAYS ━━━━━━━━━━ */
+        (function buildRays() {
+            const sunEl = $('sun');
+            const count = 12;
+            for (let i = 0; i < count; i++) {
+                const r = document.createElement('div');
+                r.className = 'sun-ray';
+                r.style.transform = `rotate(${i * (360 / count)}deg)`;
+                r.style.animationDelay = (i * (8 / count)) + 's';
+                r.style.animationDuration = rnd(6, 10) + 's';
+                sunEl.appendChild(r);
+            }
+        })();
+
+        /* ━━━━━━━━━━ NAME SPARKLES ━━━━━━━━━━ */
+        (function buildSparkles() {
+            const wrap = $('name-wrap');
+            for (let i = 0; i < 18; i++) {
+                const sp = document.createElement('div');
+                sp.className = 'name-sparkle';
+                const angle = rnd(0, 360);
+                const dist = rnd(30, 120);
+                Object.assign(sp.style, {
+                    left: (50 + rnd(-40, 40)) + '%',
+                    top: rnd(-20, 120) + '%',
+                    '--sx': (Math.cos(angle) * dist) + 'px',
+                    '--sy': (Math.sin(angle) * dist - 40) + 'px',
+                    '--sdur': rnd(1.5, 3.5) + 's',
+                    '--sdel': '-' + rnd(0, 3.5) + 's',
+                    width: rnd(3, 7) + 'px',
+                    height: rnd(3, 7) + 'px',
+                    background: pick(['#ffe234', '#fff', '#ffb703', '#ff9fe1', '#b3f0ff'])
+                });
+                wrap.appendChild(sp);
+            }
+        })();
+
+        /* ━━━━━━━━━━ GRASS BLADES ━━━━━━━━━━ */
+        (function buildGrass() {
+            const cont = $('grass');
+            const count = isMobile() ? 80 : 180;
+            const colors = ['#3a9e0e', '#52c41a', '#237804', '#5ed41a', '#1e6400', '#74e428'];
+            for (let i = 0; i < count; i++) {
+                const g = document.createElement('div');
+                g.className = 'grass-blade';
+                const h = rnd(18, 55);
+                const a1 = rnd(-12, -3), a2 = rnd(3, 12);
+                Object.assign(g.style, {
+                    left: rnd(0, 100) + '%',
+                    height: h + 'px',
+                    background: `linear-gradient(to top, ${pick(colors)}, ${pick(colors)})`,
+                    '--gbdur': rnd(2, 5) + 's',
+                    '--gbdel': '-' + rnd(0, 5) + 's',
+                    '--ga1': a1 + 'deg',
+                    '--ga2': a2 + 'deg'
+                });
+                cont.appendChild(g);
+            }
+        })();
+
+        /* ━━━━━━━━━━ CLOUDS ━━━━━━━━━━ */
+        (function buildClouds() {
+            const sky = $('sky');
+            const configs = [
+                { top: '8%', w: 220, h: 60, blobs: 5, dur: 38, del: 0 },
+                { top: '20%', w: 150, h: 44, blobs: 4, dur: 50, del: 14 },
+                { top: '13%', w: 280, h: 55, blobs: 6, dur: 44, del: 28 },
+                { top: '28%', w: 120, h: 38, blobs: 3, dur: 55, del: 5 },
+            ];
+            configs.forEach(c => {
+                const g = document.createElement('div');
+                g.className = 'cloud-group';
+                g.style.cssText = `top:${c.top};left:-30vw;--cdur:${c.dur}s;animation-delay:-${c.del}s;z-index:2;`;
+                for (let i = 0; i < c.blobs; i++) {
+                    const b = document.createElement('div');
+                    b.className = 'cloud-blob';
+                    const sz = rnd(c.h * 0.6, c.h);
+                    b.style.cssText = `width:${sz}px;height:${sz}px;left:${i * c.w / c.blobs * 0.7}px;top:${rnd(-sz * 0.3, 0)}px;`;
+                    g.appendChild(b);
+                }
+                sky.appendChild(g);
+            });
+        })();
+
+        /* ━━━━━━━━━━ FIREFLIES ━━━━━━━━━━ */
+        (function buildFireflies() {
+            const ground = $('ground');
+            const count = isMobile() ? 18 : 35;
+            for (let i = 0; i < count; i++) {
+                const f = document.createElement('div');
+                f.className = 'ff';
+                const sz = rnd(3, 6);
+                Object.assign(f.style, {
+                    width: sz + 'px', height: sz + 'px',
+                    left: rnd(0, 100) + '%',
+                    bottom: rnd(5, 50) + 'px',
+                    '--ffd': rnd(7, 14) + 's',
+                    '--ffdel': '-' + rnd(0, 14) + 's',
+                    '--ffg': rnd(1.5, 3.5) + 's'
+                });
+                ground.appendChild(f);
+            }
+        })();
+
+        /* ━━━━━━━━━━ GOLDEN DUST ━━━━━━━━━━ */
+        (function buildDust() {
+            const scene = $('scene');
+            for (let i = 0; i < 40; i++) {
+                const d = document.createElement('div');
+                d.className = 'dust';
+                const sz = rnd(2, 5);
+                Object.assign(d.style, {
+                    width: sz + 'px', height: sz + 'px',
+                    left: rnd(5, 95) + '%',
+                    bottom: rnd(15, 35) + '%',
+                    background: pick(['#ffe234', '#ffb703', '#fff8a0', '#ffd166']),
+                    '--ddur': rnd(8, 18) + 's',
+                    '--ddel': '-' + rnd(0, 18) + 's',
+                    '--dop': rnd(0.3, 0.7),
+                    '--dx': (rnd(-1, 1) > 0 ? 1 : -1) * rnd(10, 60) + 'px'
+                });
+                scene.appendChild(d);
+            }
+        })();
+
+        /* ━━━━━━━━━━ SUNFLOWERS ━━━━━━━━━━ */
+        const PETALS = 24;
+        const sunEl = $('sun');
+
+        /* Flower configs: [leftPercent, scale, zIndex, swayDur, swayDel, swayRange] */
+        const flowers = isMobile() ? [
+            [8, 0.52, 1, 4.2, 0, 3.5],
+            [28, 0.72, 2, 5.0, -2, 4],
+            [50, 1.05, 4, 6.2, -1, 4.5],
+            [72, 0.65, 2, 4.8, -3.5, 3.5],
+            [90, 0.48, 1, 5.5, -1.5, 3],
+        ] : [
+            [5, 0.50, 1, 4.0, -0.5, 3],
+            [17, 0.68, 2, 4.8, -2, 3.5],
+            [32, 0.82, 3, 5.5, -0.8, 4],
+            [50, 1.12, 5, 6.5, -1, 4.5], // hero
+            [65, 0.78, 3, 5.2, -3, 4],
+            [80, 0.62, 2, 4.6, -3.8, 3.5],
+            [93, 0.46, 1, 5.0, -2.2, 3],
+        ];
+
+        const flowerHeads = [];
+        const garden = $('garden');
+
+        function makeSunflower(left, scale, zIdx, swayDur, swayDel, swayRange) {
+            const W = window.innerWidth;
+            const stemH = Math.round(clamp(100, W * 0.18 * scale, 220) * scale);
+            const headD = Math.round(clamp(80, W * 0.15 * scale, 145));
+            const discD = Math.round(headD * 0.50);
+            const petalW = Math.round(headD * 0.16);
+            const petalH = Math.round(headD * 0.42);
+            const leafW = Math.round(clamp(28, headD * 0.38, 52));
+            const leafH = Math.round(leafW * 0.55);
+
+            /* wrapper */
+            const wrap = document.createElement('div');
+            wrap.className = 'sf-wrap';
+            wrap.style.cssText = `left:${left}%;z-index:${zIdx};`;
+
+            /* sway outer */
+            const sway = document.createElement('div');
+            sway.className = 'sf-sway-outer';
+            sway.style.cssText = `
+    --sw1:${-swayRange}deg;
+    --sw2:${swayRange}deg;
+    --sw-dur:${swayDur}s;
+    --sw-del:${swayDel}s;
+  `;
+
+            /* shadow on ground */
+            const shadow = document.createElement('div');
+            shadow.className = 'sf-shadow';
+            shadow.style.cssText = `width:${headD * 0.55}px;--sw-dur:${swayDur}s;--sw-del:${swayDel}s;`;
+
+            /* flower head */
+            const head = document.createElement('div');
+            head.className = 'flower-head';
+            head.style.cssText = `width:${headD}px;height:${headD}px;top:-${Math.round(headD * 0.45)}px;position:relative;`;
+
+            /* disc back (subtle 3D depth layer) */
+            const discBack = document.createElement('div');
+            discBack.className = 'disc-back';
+            const db = Math.round(discD * 1.1);
+            discBack.style.cssText = `width:${db}px;height:${db}px;top:${Math.round((headD - db) / 2 + headD * 0.04)}px;left:${Math.round((headD - db) / 2)}px;`;
+
+            /* disc texture overlay */
+            const discTex = document.createElement('div');
+            discTex.className = 'disc-texture';
+            discTex.style.cssText = `width:${db}px;height:${db}px;top:${Math.round((headD - db) / 2 + headD * 0.04)}px;left:${Math.round((headD - db) / 2)}px;`;
+
+            /* main disc */
+            const disc = document.createElement('div');
+            disc.className = 'center-disc';
+            disc.style.cssText = `width:${discD}px;height:${discD}px;top:${Math.round((headD - discD) / 2 + headD * 0.04)}px;left:${Math.round((headD - discD) / 2)}px;`;
+
+            /* face */
+            const eyeSize = Math.round(discD * 0.14);
+            const smileW = Math.round(discD * 0.30);
+            const smileH = Math.round(discD * 0.15);
+            const cheekSz = Math.round(discD * 0.16);
+            disc.innerHTML = `
+    <div class="face">
+      <div class="eye l" style="width:${eyeSize}px;height:${eyeSize}px;top:${Math.round(discD * 0.3)}px;"></div>
+      <div class="eye r" style="width:${eyeSize}px;height:${eyeSize}px;top:${Math.round(discD * 0.3)}px;"></div>
+      <div class="cheek l" style="width:${cheekSz}px;height:${Math.round(cheekSz * 0.55)}px;top:${Math.round(discD * 0.45)}px;"></div>
+      <div class="cheek r" style="width:${cheekSz}px;height:${Math.round(cheekSz * 0.55)}px;top:${Math.round(discD * 0.45)}px;"></div>
+      <div class="smile" style="width:${smileW}px;height:${smileH}px;top:${Math.round(discD * 0.52)}px;left:${Math.round((discD - smileW) / 2)}px;"></div>
+    </div>`;
+
+            /* petals */
+            const petalsEl = document.createElement('div');
+            petalsEl.className = 'petals';
+            const petalLeft = Math.round((headD - petalW) / 2);
+            const petalTop = Math.round(headD / 2 - petalH - discD * 0.36);
+            for (let i = 0; i < PETALS; i++) {
+                const p = document.createElement('div');
+                p.className = 'petal';
+                const isBack = i % 2 === 1;
+                // back petals: darker orange-amber; front petals: bright golden-yellow
+                p.style.cssText = `
+      width:${petalW}px;height:${petalH}px;
+      left:${petalLeft}px;top:${petalTop}px;
+      transform-origin:center ${petalH + Math.round(discD * 0.36)}px;
+      transform:rotate(${i * (360 / PETALS)}deg);
+      z-index:${isBack ? 1 : 2};
+      filter:${isBack ? 'brightness(0.72) saturate(1.2)' : 'brightness(1.05)'};
+    `;
+                petalsEl.appendChild(p);
+            }
+
+            /* stem */
+            const stem = document.createElement('div');
+            stem.className = 'stem';
+            const stemW = Math.round(clamp(8, W * 0.015, 14));
+            stem.style.cssText = `height:${stemH}px;width:${stemW}px;`;
+
+            /* leaves */
+            const lf1 = document.createElement('div'); lf1.className = 'leaf l';
+            lf1.style.cssText = `width:${leafW}px;height:${leafH}px;left:-${leafW}px;top:${Math.round(stemH * 0.3)}px;`;
+            const lf2 = document.createElement('div'); lf2.className = 'leaf r';
+            lf2.style.cssText = `width:${leafW}px;height:${leafH}px;right:-${leafW}px;top:${Math.round(stemH * 0.55)}px;`;
+            stem.append(lf1, lf2);
+
+            /*
+             * sf-unit: the key fix.
+             * Height = stemH + headD/2  →  stem fills the bottom, head fills the top.
+             * The stem's top edge lands exactly at the head's vertical center,
+             * which is where a real sunflower connects — no gap, no overlap weirdness.
+             */
+            const unit = document.createElement('div');
+            unit.className = 'sf-unit';
+            const unitH = stemH + Math.round(headD * 0.5);
+            unit.style.cssText = `width:${headD}px;height:${unitH}px;`;
+
+            /* warm glow aura behind the flower head */
+            const aura = document.createElement('div');
+            aura.className = 'flower-aura';
+            const auraD = Math.round(headD * 1.5);
+            const auraOff = Math.round((headD - auraD) / 2);
+            aura.style.cssText = `width:${auraD}px;height:${auraD}px;top:${auraOff}px;left:${auraOff}px;--sw-dur:${swayDur}s;--sw-del:${swayDel}s;`;
+
+            /* head: absolute at top, centered horizontally */
+            head.style.cssText = `width:${headD}px;height:${headD}px;left:0;top:0;`;
+
+            /* assemble */
+            head.append(petalsEl, discBack, discTex, disc);
+            unit.append(aura, head, stem);   /* aura z2, head z3, stem z1 */
+            sway.append(unit, shadow);
+            wrap.appendChild(sway);
+            garden.appendChild(wrap);
+            flowerHeads.push(head);
+        }
+
+        flowers.forEach(f => makeSunflower(...f));
+
+        /* ━━━━━━━━━━ HELIOTROPISM ━━━━━━━━━━ */
+        function trackSun() {
+            const sr = sunEl.getBoundingClientRect();
+            const sx = sr.left + sr.width / 2;
+            const sy = sr.top + sr.height / 2;
+
+            flowerHeads.forEach(h => {
+                const hr = h.getBoundingClientRect();
+                const hx = hr.left + hr.width / 2;
+                const hy = hr.top + hr.height / 2;
+                const ang = Math.atan2(sy - hy, sx - hx) * (180 / Math.PI) + 90;
+                h.style.transform = `rotate(${ang}deg)`;
+            });
+            requestAnimationFrame(trackSun);
+        }
+        trackSun();
+
+        /* ━━━━━━━━━━ UTIL ━━━━━━━━━━ */
+        function clamp(min, val, max) { return Math.min(max, Math.max(min, val)); }
+    </script>
+</body>
+
+</html>
