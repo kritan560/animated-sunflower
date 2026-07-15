@@ -1056,11 +1056,11 @@
 
         /* Flower configs: [leftPercent, scale, zIndex, swayDur, swayDel, swayRange] */
         const flowers = isMobile() ? [
-            [8, 0.52, 1, 4.2, 0, 3.5],
-            [28, 0.72, 2, 5.0, -2, 4],
-            [50, 1.05, 4, 6.2, -1, 4.5],
-            [72, 0.65, 2, 4.8, -3.5, 3.5],
-            [90, 0.48, 1, 5.5, -1.5, 3],
+            [10, 0.55, 1, 4.2, 0, 3.5],
+            [25, 0.8, 2, 5.0, -2, 4],
+            [50, 1.2, 4, 6.2, -1, 4.5], // hero
+            [75, 0.75, 2, 4.8, -3.5, 3.5],
+            [90, 0.5, 1, 5.5, -1.5, 3],
         ] : [
             [5, 0.50, 1, 4.0, -0.5, 3],
             [17, 0.68, 2, 4.8, -2, 3.5],
@@ -1076,8 +1076,15 @@
 
         function makeSunflower(left, scale, zIdx, swayDur, swayDel, swayRange) {
             const W = window.innerWidth;
-            const stemH = Math.round(clamp(100, W * 0.18 * scale, 220) * scale);
-            const headD = Math.round(clamp(80, W * 0.15 * scale, 145));
+            const isMob = W < 640;
+            
+            // Fix scaling so all sunflowers maintain perspective/depth on small screens
+            const baseStemH = clamp(isMob ? 110 : 100, W * (isMob ? 0.35 : 0.18), 220);
+            const stemH = Math.round(baseStemH * scale);
+            
+            const baseHeadD = clamp(isMob ? 75 : 80, W * (isMob ? 0.22 : 0.15), 145);
+            const headD = Math.round(baseHeadD * scale);
+            
             const discD = Math.round(headD * 0.50);
             const petalW = Math.round(headD * 0.16);
             const petalH = Math.round(headD * 0.42);
