@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Magical Garden for Nikshya</title>
+    <title>For Nikshya</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap"
       rel="stylesheet"
@@ -16,56 +16,45 @@
         width: 100%;
         height: 100%;
         overflow: hidden;
-        background-color: #0d2b0a;
+        background-color: #000;
         font-family: "Great Vibes", cursive;
       }
 
-      #scene {
-        display: block;
+      .video-container {
+        position: relative;
         width: 100%;
         height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
 
-      #text-overlay {
+      video {
         position: absolute;
-        top: 10%;
-        left: 50%;
-        transform: translateX(-50%);
-        text-align: center;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: 1;
+      }
+
+      .name-overlay {
+        position: relative;
+        z-index: 2;
+        font-size: clamp(4rem, 15vw, 10rem);
+        color: rgba(255, 255, 255, 0.9);
+        mix-blend-mode: overlay;
+        text-shadow: 2px 2px 20px rgba(255, 255, 255, 0.6);
         pointer-events: none;
-        width: 90%;
-        z-index: 10;
-      }
-
-      .name {
-        font-size: clamp(3.5rem, 12vw, 8rem);
-        color: #fffdf0;
         margin: 0;
-        text-shadow:
-          0 0 10px rgba(255, 255, 255, 0.8),
-          0 0 20px #ffb703,
-          0 0 40px #ffb703;
-        animation:
-          pulseText 4s ease-in-out infinite,
-          floatText 6s ease-in-out infinite;
-      }
-
-      .message {
-        font-size: clamp(1.8rem, 6vw, 3rem);
-        color: #fffdf0;
-        margin-top: 10px;
-        text-shadow:
-          0 0 8px rgba(255, 255, 255, 0.8),
-          0 0 15px #ffb703;
-        animation:
-          pulseText 4s ease-in-out infinite 1s,
-          floatText 6s ease-in-out infinite 1.5s;
+        animation: pulseText 4s ease-in-out infinite, floatText 6s ease-in-out infinite;
       }
 
       @keyframes pulseText {
         0%,
         100% {
-          opacity: 0.85;
+          opacity: 0.8;
           transform: scale(1);
         }
         50% {
@@ -77,459 +66,67 @@
       @keyframes floatText {
         0%,
         100% {
-          transform: translateY(0px);
+          transform: translateY(0px) scale(1);
         }
         50% {
-          transform: translateY(-15px);
+          transform: translateY(-20px) scale(1.05);
         }
+      }
+
+      .play-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 10;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 2rem;
+        cursor: pointer;
+        transition: opacity 0.5s ease;
+        font-family: system-ui, -apple-system, sans-serif;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+      }
+
+      .hidden {
+        opacity: 0;
+        pointer-events: none;
       }
     </style>
   </head>
   <body>
-    <div id="text-overlay">
-      <h1 class="name">Nikshya</h1>
-      <div class="message">
-        Get well soon! Wishing you a beautiful recovery. 🌻🌷
-      </div>
+    <!-- Overlay to capture click for autoplay policy with audio -->
+    <div class="play-overlay" id="playOverlay">
+      Tap to Start
     </div>
-    <canvas id="scene"></canvas>
+
+    <div class="video-container">
+      <video id="bgVideo" loop playsinline>
+        <source src="video.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+      <h1 class="name-overlay">Nikshya</h1>
+    </div>
 
     <script>
-      // High-Performance Canvas Garden Renderer
-      const canvas = document.getElementById("scene");
-      const ctx = canvas.getContext("2d");
+      const video = document.getElementById("bgVideo");
+      const playOverlay = document.getElementById("playOverlay");
 
-      let W, H;
-      function resize() {
-        W = canvas.width = window.innerWidth;
-        H = canvas.height = window.innerHeight;
-      }
-      window.addEventListener("resize", resize);
-      resize();
-
-      // -------------------------
-      // Entities & State
-      // -------------------------
-      let time = 0;
-      const particles = [];
-      const numParticles = W < 600 ? 40 : 100;
-      const grassBlades = [];
-      const numGrass = W < 600 ? 100 : 250;
-
-      // Initialize Grass
-      for (let i = 0; i < numGrass; i++) {
-        grassBlades.push({
-          x: Math.random() * 2000 - 500, // accommodate wide screens
-          height: 40 + Math.random() * 100,
-          baseAngle: (Math.random() - 0.5) * 0.4,
-          swayOffset: Math.random() * Math.PI * 2,
-          swaySpeed: 0.001 + Math.random() * 0.002,
-          color: `hsl(${90 + Math.random() * 30}, ${60 + Math.random() * 30}%, ${20 + Math.random() * 30}%)`,
-        });
-      }
-
-      // Initialize Particles (Fireflies & Dust)
-      for (let i = 0; i < numParticles; i++) {
-        particles.push({
-          x: Math.random() * 2000,
-          y: Math.random() * 1500,
-          vx: (Math.random() - 0.5) * 0.5,
-          vy: -Math.random() * 0.5 - 0.2,
-          size: Math.random() * 2 + 1.5,
-          life: Math.random() * Math.PI * 2,
-          speed: 0.01 + Math.random() * 0.02,
-          color: Math.random() > 0.5 ? "#d4f520" : "#ffb703",
-        });
-      }
-
-      // -------------------------
-      // Rendering Functions
-      // -------------------------
-
-      function drawSkyAndSun(time) {
-        // Sky Gradient
-        const gradient = ctx.createLinearGradient(0, 0, 0, H);
-        gradient.addColorStop(0, "#0a1622"); // Dark night top
-        gradient.addColorStop(0.5, "#162b42");
-        gradient.addColorStop(1, "#0d2b0a"); // Dark green bottom
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, W, H);
-
-        // Sun Movement (arc across the screen)
-        const sunCycle = (time * 0.0003) % (Math.PI * 2);
-        const sunX = W / 2 + Math.cos(sunCycle) * (W * 0.6);
-        const sunY = H * 0.8 + Math.sin(sunCycle) * (H * 0.7);
-
-        // Sun Glow
-        const sunRadius = W < 600 ? 120 : 250;
-        const sunGradient = ctx.createRadialGradient(
-          sunX,
-          sunY,
-          10,
-          sunX,
-          sunY,
-          sunRadius,
-        );
-        sunGradient.addColorStop(0, "rgba(255, 230, 150, 1)");
-        sunGradient.addColorStop(0.1, "rgba(255, 200, 50, 0.8)");
-        sunGradient.addColorStop(0.4, "rgba(255, 100, 10, 0.3)");
-        sunGradient.addColorStop(1, "rgba(0, 0, 0, 0)");
-
-        ctx.globalCompositeOperation = "screen";
-        ctx.fillStyle = sunGradient;
-        ctx.beginPath();
-        ctx.arc(sunX, sunY, sunRadius, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.globalCompositeOperation = "source-over";
-
-        return { x: sunX, y: sunY };
-      }
-
-      function drawGrass(time) {
-        ctx.lineWidth = W < 600 ? 2 : 3;
-        ctx.lineCap = "round";
-        for (let i = 0; i < grassBlades.length; i++) {
-          const b = grassBlades[i];
-          const sway = Math.sin(time * b.swaySpeed + b.swayOffset) * 0.3;
-          const angle = b.baseAngle + sway;
-
-          const tipX = b.x + Math.sin(angle) * b.height;
-          const tipY = H - Math.cos(angle) * b.height;
-
-          ctx.strokeStyle = b.color;
-          ctx.beginPath();
-          ctx.moveTo(b.x, H);
-          ctx.quadraticCurveTo(b.x, H - b.height / 2, tipX, tipY);
-          ctx.stroke();
+      // Wait for user interaction to play video with audio
+      document.body.addEventListener("click", () => {
+        if (video.paused) {
+          video.play().then(() => {
+            playOverlay.classList.add("hidden");
+          }).catch(err => {
+            console.error("Error playing video:", err);
+          });
         }
-      }
-
-      function drawParticles(time) {
-        ctx.globalCompositeOperation = "screen";
-        for (let i = 0; i < particles.length; i++) {
-          const p = particles[i];
-
-          // Update
-          p.x += p.vx + Math.sin(time * p.speed + p.life) * 0.5;
-          p.y += p.vy;
-          if (p.y < -10) p.y = H + 10;
-          if (p.x < -10) p.x = W + 10;
-          if (p.x > W + 10) p.x = -10;
-
-          p.life += p.speed;
-
-          // Draw Core
-          const opacity = (Math.sin(p.life) + 1) / 2; // Pulse between 0 and 1
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-          ctx.fillStyle = p.color;
-          ctx.globalAlpha = opacity * 0.9;
-          ctx.fill();
-
-          // Draw Glow
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.size * 3, 0, Math.PI * 2);
-          ctx.fillStyle = p.color;
-          ctx.globalAlpha = opacity * 0.3;
-          ctx.fill();
-        }
-        ctx.globalCompositeOperation = "source-over";
-        ctx.globalAlpha = 1;
-      }
-
-      // --- Flowers ---
-      function drawSunflower(x, bottomY, scale, sunPos, time) {
-        const headD = 120 * scale;
-        const stemH = 260 * scale;
-        const discD = headD * 0.5;
-        const petals = 24;
-        const sway = Math.sin(time * 0.001) * 0.05;
-
-        // Heliotropism
-        const headY = bottomY - stemH;
-        const dx = sunPos.x - x;
-        const dy = sunPos.y - headY;
-        let targetAngle = Math.atan2(dy, dx) + Math.PI / 2;
-
-        // Limit bend
-        const maxBend = Math.PI / 4.5;
-        if (targetAngle > maxBend) targetAngle = maxBend;
-        if (targetAngle < -maxBend) targetAngle = -maxBend;
-
-        const finalAngle = targetAngle * 0.6 + sway;
-
-        ctx.save();
-        ctx.translate(x, bottomY);
-
-        // Draw Stem
-        ctx.lineWidth = 12 * scale;
-        ctx.lineCap = "round";
-        ctx.strokeStyle = "#3aaa00";
-        ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.quadraticCurveTo(
-          0,
-          -stemH * 0.5,
-          Math.sin(finalAngle) * stemH,
-          -Math.cos(finalAngle) * stemH,
-        );
-        ctx.stroke();
-
-        // Translate to Head
-        ctx.translate(
-          Math.sin(finalAngle) * stemH,
-          -Math.cos(finalAngle) * stemH,
-        );
-        ctx.rotate(finalAngle);
-
-        // Draw Leaves
-        ctx.fillStyle = "#2d8c00";
-        ctx.beginPath();
-        ctx.ellipse(
-          -30 * scale,
-          Math.max(50 * scale, stemH * 0.4),
-          40 * scale,
-          15 * scale,
-          Math.PI / 6,
-          0,
-          Math.PI * 2,
-        );
-        ctx.fill();
-        ctx.beginPath();
-        ctx.ellipse(
-          30 * scale,
-          Math.max(80 * scale, stemH * 0.6),
-          40 * scale,
-          15 * scale,
-          -Math.PI / 6,
-          0,
-          Math.PI * 2,
-        );
-        ctx.fill();
-
-        // Head Glow
-        const glow = ctx.createRadialGradient(0, 0, discD, 0, 0, headD * 1.5);
-        glow.addColorStop(0, "rgba(255, 200, 50, 0.4)");
-        glow.addColorStop(1, "rgba(255, 200, 50, 0)");
-        ctx.fillStyle = glow;
-        ctx.beginPath();
-        ctx.arc(0, 0, headD * 1.5, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Draw Petals
-        for (let i = 0; i < petals; i++) {
-          ctx.save();
-          ctx.rotate(((Math.PI * 2) / petals) * i);
-
-          if (i % 2 !== 0) {
-            // Back petals
-            ctx.fillStyle = "#ffaa00";
-            ctx.beginPath();
-            ctx.ellipse(
-              0,
-              -headD / 2,
-              headD * 0.12,
-              headD * 0.35,
-              0,
-              0,
-              Math.PI * 2,
-            );
-            ctx.fill();
-          } else {
-            // Front petals
-            const petalGrad = ctx.createLinearGradient(
-              0,
-              -headD * 0.1,
-              0,
-              -headD * 0.8,
-            );
-            petalGrad.addColorStop(0, "#ffc500");
-            petalGrad.addColorStop(1, "#fff7a0");
-            ctx.fillStyle = petalGrad;
-            ctx.beginPath();
-            ctx.ellipse(
-              0,
-              -headD / 2,
-              headD * 0.1,
-              headD * 0.32,
-              0,
-              0,
-              Math.PI * 2,
-            );
-            ctx.fill();
-
-            // Vein
-            ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
-            ctx.lineWidth = 1.5;
-            ctx.beginPath();
-            ctx.moveTo(0, -headD * 0.3);
-            ctx.lineTo(0, -headD * 0.7);
-            ctx.stroke();
-          }
-          ctx.restore();
-        }
-
-        // Center Disc
-        const discGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, discD / 2);
-        discGrad.addColorStop(0, "#7a2e04");
-        discGrad.addColorStop(1, "#2e0f00");
-        ctx.fillStyle = discGrad;
-        ctx.beginPath();
-        ctx.arc(0, 0, discD / 2, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Seeds texture
-        ctx.fillStyle = "rgba(0,0,0,0.4)";
-        for (let r = 5; r < discD / 2 - 2; r += 4) {
-          const count = Math.floor((Math.PI * 2 * r) / 4);
-          for (let i = 0; i < count; i++) {
-            const a = (i / count) * Math.PI * 2;
-            ctx.beginPath();
-            ctx.arc(Math.cos(a) * r, Math.sin(a) * r, 1, 0, Math.PI * 2);
-            ctx.fill();
-          }
-        }
-
-        ctx.restore();
-      }
-
-      function drawTulip(x, bottomY, scale, sunPos, time) {
-        const headH = 70 * scale;
-        const headW = 45 * scale;
-        const stemH = 190 * scale;
-        const sway = Math.sin(time * 0.001 + x) * 0.06; // x offset for varied sway
-
-        // Heliotropism
-        const headY = bottomY - stemH;
-        const dx = sunPos.x - x;
-        const dy = sunPos.y - headY;
-        let targetAngle = Math.atan2(dy, dx) + Math.PI / 2;
-
-        const maxBend = Math.PI / 4;
-        if (targetAngle > maxBend) targetAngle = maxBend;
-        if (targetAngle < -maxBend) targetAngle = -maxBend;
-        const finalAngle = targetAngle * 0.5 + sway;
-
-        ctx.save();
-        ctx.translate(x, bottomY);
-
-        // Stem
-        ctx.lineWidth = 8 * scale;
-        ctx.lineCap = "round";
-        ctx.strokeStyle = "#5ed41a";
-        ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.quadraticCurveTo(
-          0,
-          -stemH * 0.5,
-          Math.sin(finalAngle) * stemH,
-          -Math.cos(finalAngle) * stemH,
-        );
-        ctx.stroke();
-
-        // Tulip Leaf (wraps the stem)
-        ctx.fillStyle = "#4ab800";
-        ctx.beginPath();
-        ctx.moveTo(0, -stemH * 0.2);
-        ctx.quadraticCurveTo(
-          -45 * scale,
-          -stemH * 0.6,
-          -15 * scale,
-          -stemH * 0.8,
-        );
-        ctx.quadraticCurveTo(0, -stemH * 0.5, 0, -stemH * 0.2);
-        ctx.fill();
-
-        // Translate to Head
-        ctx.translate(
-          Math.sin(finalAngle) * stemH,
-          -Math.cos(finalAngle) * stemH,
-        );
-        ctx.rotate(finalAngle);
-
-        // Tulip Head
-        // Back petals
-        ctx.fillStyle = "#c9184a"; // Deep pink
-        ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.quadraticCurveTo(-headW, -headH * 0.5, -headW * 0.5, -headH);
-        ctx.quadraticCurveTo(0, -headH * 0.8, headW * 0.5, -headH);
-        ctx.quadraticCurveTo(headW, -headH * 0.5, 0, 0);
-        ctx.fill();
-
-        // Front center petal
-        const frontGrad = ctx.createLinearGradient(0, 0, 0, -headH);
-        frontGrad.addColorStop(0, "#ff4d6d");
-        frontGrad.addColorStop(1, "#ffb3c1");
-        ctx.fillStyle = frontGrad;
-        ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.bezierCurveTo(
-          -headW * 0.4,
-          -headH * 0.3,
-          -headW * 0.4,
-          -headH * 0.8,
-          0,
-          -headH * 0.9,
-        );
-        ctx.bezierCurveTo(
-          headW * 0.4,
-          -headH * 0.8,
-          headW * 0.4,
-          -headH * 0.3,
-          0,
-          0,
-        );
-        ctx.fill();
-
-        ctx.restore();
-      }
-
-      // -------------------------
-      // Main Loop
-      // -------------------------
-      function render(timestamp) {
-        time = timestamp;
-        ctx.clearRect(0, 0, W, H);
-
-        const sunPos = drawSkyAndSun(time);
-        drawParticles(time);
-
-        // Far grass
-        drawGrass(time);
-
-        // Garden layout depends on screen width
-        if (W < 600) {
-          // Mobile layout
-          drawTulip(W * 0.2, H, 0.7, sunPos, time);
-          drawSunflower(W * 0.8, H, 0.7, sunPos, time);
-
-          // Hero flowers
-          drawSunflower(W * 0.4, H, 1.1, sunPos, time);
-          drawTulip(W * 0.7, H, 1.2, sunPos, time);
-        } else {
-          // Desktop layout
-          drawTulip(W * 0.15, H, 0.8, sunPos, time);
-          drawTulip(W * 0.85, H, 0.7, sunPos, time);
-
-          drawSunflower(W * 0.35, H, 0.9, sunPos, time);
-          drawSunflower(W * 0.75, H, 0.9, sunPos, time);
-
-          // Hero flowers
-          drawTulip(W * 0.55, H, 1.3, sunPos, time);
-          drawSunflower(W * 0.45, H, 1.3, sunPos, time);
-        }
-
-        // Front grass (drawn again to cover stems)
-        ctx.globalAlpha = 0.5;
-        drawGrass(time + 1000); // offset time so it sways differently
-        ctx.globalAlpha = 1;
-
-        requestAnimationFrame(render);
-      }
-
-      // Start animation
-      requestAnimationFrame(render);
+      });
     </script>
   </body>
 </html>
