@@ -48,7 +48,9 @@
         text-shadow: 2px 2px 20px rgba(255, 255, 255, 0.6);
         pointer-events: none;
         margin: 0;
-        animation: pulseText 4s ease-in-out infinite, floatText 6s ease-in-out infinite;
+        animation:
+          pulseText 4s ease-in-out infinite,
+          floatText 6s ease-in-out infinite;
       }
 
       @keyframes pulseText {
@@ -88,7 +90,10 @@
         font-size: 2rem;
         cursor: pointer;
         transition: opacity 0.5s ease;
-        font-family: system-ui, -apple-system, sans-serif;
+        font-family:
+          system-ui,
+          -apple-system,
+          sans-serif;
         letter-spacing: 2px;
         text-transform: uppercase;
       }
@@ -101,13 +106,11 @@
   </head>
   <body>
     <!-- Overlay to capture click for autoplay policy with audio -->
-    <div class="play-overlay" id="playOverlay">
-      Tap to Start
-    </div>
+    <div class="play-overlay" id="playOverlay">Tap to Start</div>
 
     <div class="video-container">
       <video id="bgVideo" loop playsinline>
-        <source src="video.mp4" type="video/mp4" />
+        <source src="video2_updated.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
       <h1 class="name-overlay">Nikshya</h1>
@@ -120,11 +123,14 @@
       // Wait for user interaction to play video with audio
       document.body.addEventListener("click", () => {
         if (video.paused) {
-          video.play().then(() => {
-            playOverlay.classList.add("hidden");
-          }).catch(err => {
-            console.error("Error playing video:", err);
-          });
+          video
+            .play()
+            .then(() => {
+              playOverlay.classList.add("hidden");
+            })
+            .catch((err) => {
+              console.error("Error playing video:", err);
+            });
         }
       });
     </script>
